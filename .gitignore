@@ -1,0 +1,5 @@
+*.map
+/turing machine.html
+/js/turingmachine.js
+/js/dependencies/vf.js
+/.idea
