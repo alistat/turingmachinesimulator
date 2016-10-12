@@ -1,0 +1,485 @@
+extends ./layout
+
+block title
+  title Online Turing Machine Simulator | alistat CS
+
+block canonical
+  link(rel="canonical", href="https://alistat.eu/online/turingmachinesimulator")
+
+block styles
+  style.
+    h1 {
+      /*margin-bottom: 3.5em;*/
+      /*font-size: 3em;*/
+      /*margin-top: 1.3em;*/
+      color: #3B5487;
+      text-align: center;
+      letter-spacing: 0.55em;
+      margin-bottom: 4em;
+      font-family: m, monospace;
+      margin-top: 1em;
+    }
+    .form {
+      border-right: 3px dashed #cde3e9;
+      border-left: 3px dashed #cde3e9;
+      border-radius: 0.8em;
+      border-top: 1px solid #e2eef2;
+      background: rgb(252, 252, 252);
+      border-bottom: 1px solid #dedede;
+      overflow: hidden;
+      margin-bottom: 2.5em;
+      position: relative;
+    }
+    .form-group {
+      padding: 0.8em 1em;
+      margin-bottom: 2.1em;
+      display: inline-block;
+    }
+    .form .form-control {
+      font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+    }
+    .machineNameWrap {
+      text-align: center;
+      border-bottom: 2px solid #deefec;
+      padding: 0.3em;
+      background: rgb(244, 250, 249);
+    }
+    .machineName {
+      border: none;
+      font-size: 1.6em;
+      padding: 0;
+      width: 100%;
+      text-align: center;
+      font-weight: 600;
+      color: rgb(125, 111, 128);
+      background: transparent;
+    }
+    .form:first-of-type:last-of-type button.close {
+      display: none;
+    }
+    .form button.close {
+      position: absolute;
+      right: 0.3em;
+      top: -0.01em;
+      font-size: 2.2em;
+      z-index: 10;
+      opacity: 0.4;
+    }
+    label {
+      font-size: 1.25em;
+      font-weight: 400;
+      color: #621AA5;
+    }
+    .comment {
+      float: left;
+      margin-top: 1em;
+    }
+    textarea.form-control.program {
+      height: 20em;
+    }
+    .states {
+      float: left;
+      max-width: 10em;
+      margin-right: 2.5em;
+
+    }
+    .programWrap {
+      width: 30em;
+    }
+    .controls {
+      max-width: 25em;
+      vertical-align: top;
+    }
+    .input {
+      width: 100%;
+      height: 7em;
+      margin-bottom: 1em;
+    }
+    .maxStepsLabel {
+      font-size: 1.15em;
+    }
+    .maxSteps {
+      vertical-align: middle;
+      margin-left: 0.5em;
+      margin-right: 1em;
+      max-width: 10em;
+    }
+    #visualization {
+      position: relative;
+      height: 5.8em;
+      padding: 1em 0.2em 0;
+      border-left: 4px solid #4a9e5a;
+      margin-bottom: 1.5em;
+      border-radius: 1em;
+      /*max-width: 100%;*/
+      margin-left: auto;
+      margin-right: auto;
+      border-right: 4px solid #ce8365;
+      margin-top: 8em;
+    }
+    @media screen and (min-width: 1340px) {
+      #visualization {
+        width: 1300px;
+        margin-left: -65px;
+      }
+    }
+    @media screen and (min-width: 1250px) and (max-width: 1340px) {
+      #visualization {
+        width: 1230px;
+        margin-left: -30px;
+      }
+    }
+    .tape {
+      /*position: absolute;*/
+      /*padding: 0 2em;*/
+      overflow: hidden;
+      /*text-align: center;*/
+    }
+    .tapeCellWrap {
+      padding: 0 0.22em;
+      vertical-align: middle;
+    }
+    .tapeCell {
+      font-size: 2.6em;
+      font-weight: bold;
+      text-align: center;
+      background-color: #0098ec;
+      border: 1px solid #C9C9C9;
+      font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+      padding: 0.01em 0.1em;
+      vertical-align: middle;
+      color: white;
+    }
+    .machineHead {
+      position: absolute;
+      padding: 3.2em 0.0em 0.3em;
+      font-size: 1.1em;
+      height: 4.9em;
+      width: 2.35em;
+      text-align: center;
+      background-color: #c8dfea;
+      z-index: -1;
+      font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+      border-radius: 0 0 0.4em 0.4em;
+      border: 1px solid #a1cedd;
+      font-weight: 600;
+      color: #286b5a;
+      top: 0.7em;
+      border-top: 0.15em solid #8bb6c5;
+    }
+
+    .bubble {
+      background-image: url("./images/bubble.jpg");
+      position: absolute;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      width: 7em;
+      height: 6.4em;
+      top: -5.85em;
+      padding: 0.4em 0.8em;
+      font-weight: 600;
+      color: #ad2998;
+      white-space: pre-line;
+      font-size: 1.1em;
+    }
+
+    #stack {
+      text-align: center;
+    }
+
+    #stack ul {
+      display: inline-block;
+      list-style-type: none;
+      font-size: 1.4em;
+      /*font-weight: bold;*/
+      color: #a1a1a1;
+      height: 4.3em;
+      overflow-y: hidden;
+      padding: 0;
+    }
+    #stack li:nth-child(1) {
+      color: #565656;
+      border-bottom: 0.1em solid #e4eaee;
+    }
+    #stack li:nth-child(1)::before {
+      content: "🡺";
+      color: #4a9e5a;
+      margin-right: 0.6em;
+    }
+    #stack li:nth-child(1)::after {
+      content: "🡸";
+      color: #ce8365;
+      margin-left: 0.6em;
+    }
+    #stack li {
+      border-bottom: 0.1em solid #eff2f4;
+    }
+    #stack li:nth-child(2) {
+      color: #8e8e8e;
+    }
+
+    #visControls {
+      margin-bottom: 2.5em;
+    }
+
+    #stepWrap {
+      margin-right: 2em;
+      margin-left: 11%;
+      float: left;
+    }
+
+    #steps {
+      margin-left: 0.2em;
+      font-weight: bold;
+      font-size: 1.5em;
+      color: #3B5487;
+      vertical-align: middle;
+    }
+    #stepLabel {
+      font-size: 1.4em;
+      font-weight: 600;
+      /*color: #0077b9;*/
+      vertical-align: middle;
+    }
+    #speedWrap {
+      margin-left: 2em;
+      margin-right: 11%;
+      float: right;
+    }
+    #speed {
+      width: 15em;
+      max-width: 15em;
+      margin-left: 0.5em;
+      display: inline-block;
+      height: 1.5em;
+      vertical-align: middle;
+    }
+    #speed .ui-slider-handle {
+      height: 2em;
+      background: rgb(59, 106, 192) none repeat scroll 0% 0%;
+      border: 1px solid rgb(93, 66, 89);
+      box-shadow: 1px 1px 4px 1px rgba(80, 10, 84, 0.5);
+    }
+    #speedLabel {
+      font-size: 1.4em;
+      font-weight: 600;
+      color: #0077b9;
+      vertical-align: middle;
+    }
+    #buttonsWrap {
+      margin: 0.5em 1em 1em;
+    }
+    #buttonsWrap button {
+      margin-right: 1em;
+    }
+
+    #savedMachines {
+      background: #000;
+      width: 95%;
+      height: 20em;
+      word-wrap: break-word;
+      font-weight: 600;
+      color: #30841f;
+      font-size: 1.05em;
+      border-radius: 1em;
+      margin: auto;
+      font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+    }
+
+    #savedMachines[readonly] {
+      background: #000;
+    }
+
+    .machinesWrap {
+      padding-top: 4em;
+    }
+
+    #instructions {
+      background: #dddae91a;
+      border-radius: 2em;
+      padding: 1em 1em 1em 1.5em;
+      background-image: url(./images/paper-background-10.jpg);
+      background-blend-mode: color-burn;
+    }
+
+block head
+  .head
+    h1 Turing Machine Beta
+
+block content
+  .content
+    #visualization
+      .tape
+      span.machineHead
+      .bubble.
+        hello,
+        human!
+    #stack
+      ul
+    #visControls
+      #stepWrap
+        span#stepLabel Steps:
+        span#steps 0
+      #speedWrap
+        span#speedLabel Speed:
+        #speed
+      div(style="clear:both;")
+    .row.machinesWrap
+      #instructions.col-xs-12.col-md-4.col-md-push-8
+        h4 Basic Usage
+        ol
+          li.
+            Write your favorite turing machine program. You should write the tuples of the machine and declare the initial state, the accept state and,
+            optionally, a reject state.<br>The tuples are in the form <code>currentState input nextState output direction</code> where
+            <code>input/output</code> can be a letter, digit, symbol (except for comma) or _ (underscore) which denotes null.
+            <br><code>Direction</code> can be either 1 (right) or -1 (left). Note that if
+            <code>input</code> or <code>output</code> are longer that 1 character only the first character will be kept.
+            <br> All commands are separated by comma.
+          li Give a test input.
+          li
+            strong RUN!
+        <br>
+        h4 Multiple Machines
+        h5 You can create multiple machines and call the one machine from the other.
+        ol
+          li Create a new machine by pushing the green button and program that machine as you like.
+          li Give that machine a name e.g. machineB
+          li.
+            Now to call machineB from another machine, use <code>state0 input0 <strong>exec</strong> machineB</code> which will execute
+            machineB when it encounters state0 and input0.
+            <br> For example, if you want machineB to be called when you are at state <code>q1</code> and you read <code>0</code>
+            you should use <code>q1 0 <strong>exec</strong> machineB</code>.
+      #machines.col-xs-12.col-md-8.col-md-pull-4(vf-model="list:machines, itemTempl:'#form'" vf-create="templ:'#form', append-to:'#machines'")
+    #buttonsWrap
+      button#newMachineButton.btn.btn-success(vf-listen="on:click, action:create, target:'#machines'") New Machine
+      button#saveAllButton.btn.btn-primary(onclick="onSaveModal()") Save All
+
+
+    form#form.form(vf-model="object:machine, parent:machines" vf-delete=" " action="javascript:void(0)" style="display:none")
+      .machineNameWrap
+        input.machineName(vf-model="atom:name, parent:machine" placeholder="-- Machine Name Here" title="Click to edit name")
+        button.close(type='button', vf-listen="on:click, action:delete", aria-label='Remove' title="Remove")
+          span(aria-hidden='true') ×
+      fieldset.programWrap.form-group
+        label Program
+        textarea.program.form-control(vf-model="atom:program, parent:machine").
+          initial q1,
+          accept q0,
+
+          q1 1 q1 1 1,
+          q1 _ q0 1 -1
+
+      fieldset.controls.form-group
+        label Input
+        textarea.input.form-control(vf-model="atom:input, parent:machine").
+          111
+        label.maxStepsLabel Max Steps
+        input.maxSteps(vf-model="atom:maxSteps, parent:machine" type="number" min="1" max="100000" value="1000")
+        button.calc.btn.btn-primary RUN
+        .comment
+      div(style="clear:both;")
+
+  #saveMachines.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel' style="display: none;")
+    .modal-dialog.modal-lg(role='document')
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') ×
+          h4.modal-title Machines Currently Open
+        .modal-body
+          textarea#savedMachines.form-control(readonly)
+        .modal-footer
+          button.btn.btn-default(type='button', data-dismiss='modal') Close
+          a#downloadAllButton.btn.btn-primary(type='button' download) Download
+
+
+
+  script.
+    if (typeof tm === "undefined")
+      window.tm = {}
+    var MAX_INTEVAL = tm.MAX_INTEVAL = 4000;
+    var MIN_INTEVAL = tm.MIN_INTEVAL = 150;
+    var DEFAULT_INTERVAL = tm.DEFAULT_INTERVAL = 800;
+    var DEFAULT_MACHINES = tm.DEFAULT_MACHINES = [{"name":"UnaryStringDuplication","program":
+            "initial co,\naccept acc,\n\nco 1 co1 i 1,\nco1 1 co1 1 1,\nco1 _ co2 _ 1,\nco2 _ ba 1 -1,\nco2 1 co2 1 1,\nba 1 ba 1 -1,\nba _ ba1 _ -1,\nba1 1 ba2 1 -1,\nba2 1 ba2 1 -1,\nba2 i co i 1,\nba1 i re 1 -1,\nre i re 1 -1,\nre _ acc _ 1,\nre | acc | 1\n",
+      "input":"111","maxSteps":"1000"},{"name":"IntegerMultiplication","program":
+    "initial de,\naccept q0,\n\nde 1 de1 _ 1,\nde1 1 de1 1 1,\nde1 _ de2 | 1,\n\nde2 1 de3 1 1,\nde3 1 de3 1 1,\nde3 _ de9 _ -1,\nde9 1 ba _ -1,\nba 1 ba 1 -1,\nba | ba1 | -1,\nba1 1 ba9 1 -1,\nba1 _ ze0 _ 1,\nba9 1 ba9 1 -1,\nba9 _ mu _ 1,\n\nmu 1 pa0 " +
+    "_ 1,\npa0 | q0 _ 1,\npa0 1 pa 1 1,\npa 1 pa 1 1,\npa | fr1 | 1,\nfr1 1 fr1 1 1,\nfr1 _ fr0 _ 1,\nfr0 1 fr1 1 1,\nfr0 _ pr0 _ -1,\npr0 _ pr1 _ -1,\npr1 1 prb 1 -1,\npr1 | ze1 _ -1,\nprb 1 prb 1 -1,\nprb _ mu2 _ 1,\nprb | mu2 | 1,\nmu2 1 exec UnarySt" +
+    "ringDuplication,\nacc _ acc _ -1,\nacc 1 acc 1 -1,\nacc | ba9 | -1,\n\nze0 _ z0a _ 1,\nze0 1 ze0 _ 1,\nze0 | ze0 _ 1,\nz0a 1 ze0 _ 1,\nz0a _ q0 _ -1,\nze1 _ z1a _ -1,\nze1 1 ze1 _ -1,\nze1 | ze1 _ -1,\nz1a 1 ze1 _ -1,\nz1a _ q0 _ 1",
+      "input":"1111_1111","maxSteps":"1000"}];
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var vis = jQuery('#visualization');
+      vis.data("offset", 0);
+      tm.draw(tm.strToInput("______1_________________________________"), 6, "q1", vis);
+      vis.data("offset", 6);
+      jQuery("#speed").slider({min: 0, max: MAX_INTEVAL-MIN_INTEVAL, value: MAX_INTEVAL - DEFAULT_INTERVAL});
+
+      vf.setModel(document.querySelector("#machines"), DEFAULT_MACHINES);
+
+
+      jQuery('.form').submit(function (e) {
+        e.preventDefault();
+        onRun(e.target);
+      });
+    });
+
+    function onRun(initMachine) {
+      $('html, body').animate({
+        scrollTop: $(".head").offset().top
+      }, 500);
+      var initMachineData = vf.getModel(initMachine);
+      vf.getModel(document.querySelector('#machines')).forEach(function (form) { tm.strToProgram(form.program, form.name); });
+      var input = tm.strToInput(initMachineData.input);
+      var program = tm.strToProgram(initMachineData.program);
+      var visualization = jQuery('#visualization');
+      tm.draw(input, 0, program.initState, visualization);
+
+      var result = tm.calc(program, input, initMachineData.maxSteps);
+
+      var stack = jQuery("#stack").find("ul");
+      stack.html("");
+      var name = initMachineData.name;
+      var li = jQuery(document.createElement("li"));
+      li.text(typeof name == "string" && !name.match(/^\s*$/g) ? name : "Main Machine");
+      stack.prepend(li);
+
+      if (result.steps.length > 0) {
+        function nextUpdate(i) {
+          jQuery("#steps").text(i + 1);
+          tm.updateDraw(result.steps[i], visualization, function () {
+            if (i + 1 < result.steps.length) {
+              nextUpdate(i + 1);
+            } else {
+              if (result.error) {
+                console.log(result.error);
+                jQuery(".bubble").text("#$%^&*\n)~+_/?@");
+              } else if (result.outOfSteps) {
+                jQuery(".bubble").text("out of steps :'(");
+              } else if (result.accept) {
+                jQuery(".bubble").text("accept!\n:) :) :)");
+              } else if (result.reject) {
+                jQuery(".bubble").text("reject...\n:( :( :(");
+              }
+            }
+          });
+        }
+
+        setTimeout(nextUpdate, 1000, 0);
+        //nextUpdate(0);
+      }
+    }
+
+    function onSaveModal() {
+      var text = JSON.stringify(vf.getModel(document.querySelector('#machines')));
+      jQuery('#savedMachines').val(text);
+      jQuery('#downloadAllButton').attr("href", "data:text/json,"+encodeURIComponent(text));
+      jQuery('#saveMachines').modal()
+    }
+
+
+block foot
+  div(style="text-align:center;margin:2em 0;")
+    span MIT Licence
+    a(href="https://github.com/alistat/turingmachinesimulator" target="_blank")  Source Code
